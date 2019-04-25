@@ -4,17 +4,17 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # check gpu
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+device = torch.device('cpu')
 
 
 def run(cov_filename, result_filename):
     # print(torch.__version__)
     temp_x = np.loadtxt(cov_filename, dtype=np.float32, delimiter=",")
     temp_y = np.loadtxt(result_filename, dtype=np.float32, delimiter=",")
-    BPNN(temp_x, temp_y)
+    return BPNN(temp_x, temp_y)
 
 
-def BPNN(x,y,step=5000,rate=0.01,debug=False):
+def BPNN(x,y,step=5000,rate=0.01,debug=True):
     # process data [>0 => 1, 0 => 0]
     x_train = np.float32(x > 0)
     y_train = y  # false 1 ; true 0
@@ -81,7 +81,7 @@ def BPNN(x,y,step=5000,rate=0.01,debug=False):
             test[i] = 1
             result.append((i + 1, float(model(test)[0])))
     sorted_result = sorted(result, key=lambda x: x[1], reverse=True)
-    return [i[0] for i in sorted_result]
+    return sorted_result
 
 
 if __name__ == '__main__':

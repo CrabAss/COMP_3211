@@ -51,7 +51,7 @@ if __name__ == '__main__':
     overall_plots.append(result)
 
     pytcov.run_loader("test_sort", "check5()", "buggy5_sort", 500)
-    result = run("buggy/buggy5.py", "buggy5_sort_buggy5.py.csv", "buggy5_sort_result.txt", [57])
+    result = run("buggy/buggy5.py", "buggy5_sort_buggy5.py.csv", "buggy5_sort_result.txt", [58])
     overall_plots.append(result)
 
     pytcov.run_loader("test_sort", "check6()", "buggy6_sort", 500)
