@@ -2,13 +2,15 @@ import torch
 import torch.nn as nn
 import numpy as np
 import matplotlib.pyplot as plt
-# check gpu
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-def BPNNS(x,y,step=5000,rate=0.01,debug=False):
+
+
+def BPNNS(x,y,step=10000,rate=0.01,debug=False):
+    # check gpu
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     # process data [>0 => 1, 0 => 0]
     np.set_printoptions(threshold=np.inf)
-    x_bin = np.float32(x > 0)
+    x_bin = np.float64(x > 0)
     x_train = x / x.sum(axis=1)[:,None]
     y_train = y  # false 1 ; true 0
     # set size
@@ -20,7 +22,7 @@ def BPNNS(x,y,step=5000,rate=0.01,debug=False):
     model = nn.Sequential(nn.Linear(n_in, n_h),
                           nn.Sigmoid(),
                           nn.Linear(n_h, 1),
-                          nn.Sigmoid()).cuda()
+                          nn.Sigmoid()).double().cuda()
     # loss
     criterion = torch.nn.MSELoss()
     # optimizer
@@ -69,17 +71,22 @@ def BPNNS(x,y,step=5000,rate=0.01,debug=False):
     result = []
     for i in range(n_in):
         if (s_f[i] == 1):
-            test = torch.tensor(np.float32([0] * n_in))
+            test = torch.tensor(np.float64([0] * n_in))
             test[i] = 1
             result.append((i + 1, float(model(test)[0])))
     sorted_result = sorted(result, key=lambda x: x[1], reverse=True)
-    return [i[0] for i in sorted_result]
+    return sorted_result
 
+def run(cov_filename, result_filename):
+    # print(torch.__version__)
+    temp_x = np.loadtxt(cov_filename, dtype=np.float64, delimiter=",")
+    temp_y = np.loadtxt(result_filename, dtype=np.float64, delimiter=",")
+    return BPNNS(temp_x, temp_y,debug=False)
 
 if __name__ == '__main__':
 
     #print(torch.__version__)
-    temp_x = np.loadtxt("buggy_sort_buggy.py.csv",dtype=np.float32, delimiter=",")
-    temp_y = np.loadtxt("buggy_sort_result.txt",dtype=np.float32, delimiter=",")
+    temp_x = np.loadtxt("buggy1_sort_buggy1.py.csv",dtype=np.float64, delimiter=",")
+    temp_y = np.loadtxt("buggy1_sort_result.txt",dtype=np.float64, delimiter=",")
 
-    print(BPNNS(temp_x,temp_y))
+    print(BPNNS(temp_x,temp_y),debug=True)

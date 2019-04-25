@@ -14,7 +14,7 @@ def run(cov_filename, result_filename):
     return BPNN(temp_x, temp_y)
 
 
-def BPNN(x,y,step=5000,rate=0.01,debug=True):
+def BPNN(x,y,step=5000,rate=0.01,debug=False):
     # process data [>0 => 1, 0 => 0]
     x_train = np.float32(x > 0)
     y_train = y  # false 1 ; true 0
