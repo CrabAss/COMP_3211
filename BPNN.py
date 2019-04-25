@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # check gpu
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+device = torch.device('cpu')
 
 
 def run(cov_filename, result_filename):
@@ -14,7 +14,7 @@ def run(cov_filename, result_filename):
     return BPNN(temp_x, temp_y)
 
 
-def BPNN(x,y,step=5000,rate=0.01,debug=False):
+def BPNN(x,y,step=5000,rate=0.01,debug=True):
     # process data [>0 => 1, 0 => 0]
     x_train = np.float32(x > 0)
     y_train = y  # false 1 ; true 0
