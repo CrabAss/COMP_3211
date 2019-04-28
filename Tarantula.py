@@ -19,18 +19,20 @@ def run(cov_filename, result_filename):
     total_pass = 0
     total_fail = 0
     pass_count = [0] * statement_count
-
+    fail_count = [0] * statement_count
+    
     for i in range(0, testcase_count):
         if test_result[i] == 0:
             total_pass += 1
             pass_count = np.add(test_cov_binary[i], pass_count)
         else:
             total_fail += 1
+            fail_count = np.add(test_cov_binary[i],fail_count)
 
     for i in range(0, statement_count):
         if pass_count[i] > 0:
             susp[i] = division(division(pass_count[i], total_pass),
-                               (division(pass_count[i], total_pass) + division(pass_count[i], total_fail)))
+                               (division(pass_count[i], total_pass) + division(fail_count[i], total_fail)))
             susp[i] = 1 - susp[i]
 
     susp_sorted = [[idx, susp_value] for idx, susp_value in enumerate(susp, 1)]
